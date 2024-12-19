@@ -7,7 +7,6 @@ import io.github.yorucyber.inventory_api.repositories.IMedicineRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 public class MedicineController {
     private final IMedicineRepository medicineRepository;
