@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${SPRING_BOOT_PORT}:${SPRING_BOOT_PORT}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${DATABASE_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - postgres
+    networks:
+      - s-network
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - s-network
+networks:
+  s-network:
+    driver: bridge
