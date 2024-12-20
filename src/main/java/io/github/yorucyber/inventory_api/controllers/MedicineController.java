@@ -11,6 +11,7 @@ import java.util.List;
 public class MedicineController {
     private final IMedicineRepository medicineRepository;
 
+
     MedicineController(IMedicineRepository medicineRepository) {
         this.medicineRepository = medicineRepository;
     }

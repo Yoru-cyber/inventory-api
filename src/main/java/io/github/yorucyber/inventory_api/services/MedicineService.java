@@ -1,6 +1,7 @@
 package io.github.yorucyber.inventory_api.services;
 
 import io.github.yorucyber.inventory_api.entities.Medicine;
+import io.github.yorucyber.inventory_api.exceptions.MedicineNotFoundException;
 import io.github.yorucyber.inventory_api.repositories.IMedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,20 +11,18 @@ import java.util.Optional;
 
 @Service
 public class MedicineService {
-    private final IMedicineRepository medicineRepository;
 
     @Autowired
-    public MedicineService(IMedicineRepository medicineRepository) {
-        this.medicineRepository = medicineRepository;
+    private IMedicineRepository medicineRepository;
+
+
+    public List<Medicine> findAll() {
+        return medicineRepository.findAll();
     }
 
-    public List<Medicine> getAllMedicines() {
-        return (List<Medicine>) medicineRepository.findAll();
-    }
-
-    public Medicine getMedicineById(long id) {
+    public Medicine findById(long id) {
         Optional<Medicine> medicine = medicineRepository.findById(id);
-        return medicine.orElseThrow(() -> new IllegalArgumentException("Medicine not found with id: " + id));
+        return medicine.orElseThrow(() -> new MedicineNotFoundException("Medicine not found with id: " + id, id));
     }
 
     public Medicine save(Medicine medicine) {
@@ -32,14 +31,14 @@ public class MedicineService {
 
     public Medicine update(long id, Medicine updatedMedicine) {
         Medicine existingMedicine = medicineRepository.findById(id).orElse(null);
-        existingMedicine. setName(updatedMedicine.getName());
+        existingMedicine.setName(updatedMedicine.getName());
         existingMedicine.setPrice(updatedMedicine.getPrice());
         existingMedicine.setStock(updatedMedicine.getStock());
         medicineRepository.save(existingMedicine);
-        return  existingMedicine;
+        return existingMedicine;
     }
 
-    public void deleteMedicineById(long id) {
+    public void deleteById(long id) {
         medicineRepository.deleteById(id);
     }
 }
