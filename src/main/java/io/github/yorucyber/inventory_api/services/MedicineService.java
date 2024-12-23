@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MedicineService {
@@ -21,8 +20,7 @@ public class MedicineService {
     }
 
     public Medicine findById(long id) {
-        Optional<Medicine> medicine = medicineRepository.findById(id);
-        return medicine.orElseThrow(() -> new MedicineNotFoundException("Medicine not found with id: " + id, id));
+        return medicineRepository.findById(id).orElseThrow(() -> new MedicineNotFoundException("Medicine not found with id: " + id, id));
     }
 
     public Medicine save(Medicine medicine) {
@@ -30,7 +28,7 @@ public class MedicineService {
     }
 
     public Medicine update(long id, Medicine updatedMedicine) {
-        Medicine existingMedicine = medicineRepository.findById(id).orElse(null);
+        Medicine existingMedicine = medicineRepository.findById(id).orElseThrow(() -> new MedicineNotFoundException("Medicine not found with id: " + id, id));
         existingMedicine.setName(updatedMedicine.getName());
         existingMedicine.setPrice(updatedMedicine.getPrice());
         existingMedicine.setStock(updatedMedicine.getStock());

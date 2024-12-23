@@ -1,58 +1,53 @@
 package io.github.yorucyber.inventory_api.controllers;
 
-import io.github.yorucyber.inventory_api.dao.MedicineDAO;
 import io.github.yorucyber.inventory_api.entities.Medicine;
-import io.github.yorucyber.inventory_api.exceptions.MedicineNotFoundException;
-import io.github.yorucyber.inventory_api.repositories.IMedicineRepository;
+import io.github.yorucyber.inventory_api.services.MedicineService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 public class MedicineController {
-    private final IMedicineRepository medicineRepository;
 
+    private final MedicineService medicineService;
 
-    MedicineController(IMedicineRepository medicineRepository) {
-        this.medicineRepository = medicineRepository;
+    MedicineController(MedicineService medicineService) {
+        this.medicineService = medicineService;
     }
 
     // Aggregate root
     // tag::get-aggregate-root[]
-    @GetMapping("/medicines")
-    List<Medicine> all() {
-        return medicineRepository.findAll();
+    @GetMapping("/api/v1/medicines")
+    public List<Medicine> all() {
+        return medicineService.findAll();
     }
     // end::get-aggregate-root[]
 
-    @PostMapping("/medicines")
-    Medicine create(@RequestBody Medicine medicineDAO) {
-        return medicineRepository.save(medicineDAO);
+    @PostMapping("/api/v1/medicines")
+    public Medicine create(@RequestBody Medicine medicine) {
+        return medicineService.save(medicine);
     }
 
-    // Single item
-    @GetMapping("/medicines/{id}")
-    Medicine find(@PathVariable Long id) {
-
-        return medicineRepository.findById(id)
-                .orElseThrow(() -> new MedicineNotFoundException("Customer does not exist", id));
+    // Returns a single item
+    //Needs error handle when entity doesn't exist
+    @GetMapping("/api/v1/medicines/{id}")
+    public Medicine find(@PathVariable Long id) {
+        return medicineService.findById(id);
     }
 
-//    @PutMapping("/medicines/{id}")
-//    Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
-//
-//        return medicineRepository.findById(id)
-//                .map(employee -> {
-//                    employee.setName(newEmployee.getName());
-//                    employee.setRole(newEmployee.getRole());
-//                    return repository.save(employee);
-//                })
-//                .orElseGet(() -> {
-//                    return repository.save(newEmployee);
-//                });
-//    }
+    @PutMapping("/api/v1/medicines/{id}")
+    public Medicine update(@RequestBody Medicine updatedMedicine, @PathVariable Long id) {
+        Medicine existingMedicine = medicineService.findById(id);
+        existingMedicine.setName(updatedMedicine.getName());
+        existingMedicine.setPrice(updatedMedicine.getPrice());
+        existingMedicine.setStock(updatedMedicine.getStock());
+        return medicineService.update(id, existingMedicine);
+    }
 
-    @DeleteMapping("/medicines/{id}")
-    void delete(@PathVariable Long id) {
-        medicineRepository.deleteById(id);
+    @DeleteMapping("/api/v1/medicines/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        medicineService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
