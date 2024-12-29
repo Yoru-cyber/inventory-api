@@ -2,8 +2,12 @@ package io.github.yorucyber.inventory_api.controllers;
 
 import io.github.yorucyber.inventory_api.entities.Medicine;
 import io.github.yorucyber.inventory_api.services.MedicineService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -11,6 +15,7 @@ import java.util.List;
 public class MedicineController {
 
     private final MedicineService medicineService;
+    Logger logger = LoggerFactory.getLogger(MedicineController.class);
 
     MedicineController(MedicineService medicineService) {
         this.medicineService = medicineService;
@@ -33,16 +38,23 @@ public class MedicineController {
     //Needs error handle when entity doesn't exist
     @GetMapping("/api/v1/medicines/{id}")
     public Medicine find(@PathVariable Long id) {
-        return medicineService.findById(id);
+        try {
+            return medicineService.findById(id);
+        } catch (Exception e) {
+            logger.error("Error retrieving medicine", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medicine not found", e);
+        }
+
     }
 
     @PutMapping("/api/v1/medicines/{id}")
     public Medicine update(@RequestBody Medicine updatedMedicine, @PathVariable Long id) {
-        Medicine existingMedicine = medicineService.findById(id);
-        existingMedicine.setName(updatedMedicine.getName());
-        existingMedicine.setPrice(updatedMedicine.getPrice());
-        existingMedicine.setStock(updatedMedicine.getStock());
-        return medicineService.update(id, existingMedicine);
+        try {
+            return medicineService.update(id, updatedMedicine);
+        } catch (Exception e) {
+            logger.error("Error retrieving medicine", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Medicine not found", e);
+        }
     }
 
     @DeleteMapping("/api/v1/medicines/{id}")
