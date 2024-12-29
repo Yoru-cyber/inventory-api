@@ -44,7 +44,7 @@ public class CanFindMedicineTest {
     @Test
     public void testUpdateMedicine_NotFound() throws Exception {
         long id = 1L;
-        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").provider("DDD").build();
+        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").build();
         String json = objectMapper.writeValueAsString(updatedMedicine);
         when(medicineService.update(eq(id), any(Medicine.class))).thenReturn(updatedMedicine);
 
@@ -52,7 +52,6 @@ public class CanFindMedicineTest {
                 .andExpect(jsonPath("$.id").value(id)) // Verify the response body
                 .andExpect(jsonPath("$.name").value("Acetaminofen"))
                 .andExpect(jsonPath("$.price").value(BigDecimal.valueOf(34.64)))
-                .andExpect(jsonPath("$.stock").value(200))
-                .andExpect(jsonPath("$.provider").value("DDD"));
+                .andExpect(jsonPath("$.stock").value(200));
     }
 }

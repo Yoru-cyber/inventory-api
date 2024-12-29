@@ -30,7 +30,7 @@ public class CanFindMedicineByIdTest {
     @Test
     void saveShouldSaveEntity() throws Exception {
         // Arrange
-        Medicine newMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").provider("DDD").build();
+        Medicine newMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").build();
 
         when(medicineRepository.save(Mockito.any(Medicine.class))).thenReturn(newMedicine);
         when(medicineRepository.findById(1L)).thenReturn(Optional.of(newMedicine));

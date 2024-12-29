@@ -7,21 +7,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "medicine")
-public class Medicine {
+@Table(name = "sale")
+public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String name;
-    private int stock;
     private BigDecimal price;
-    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sale> sales;
+    private Integer stock;
+    @ManyToOne
+    @JoinColumn(name = "medicine_id", nullable = false)
+    private Medicine medicine;
+
+    @ManyToOne
+    @JoinColumn(name = "provider_id", nullable = false)
+    private Provider provider;
 }

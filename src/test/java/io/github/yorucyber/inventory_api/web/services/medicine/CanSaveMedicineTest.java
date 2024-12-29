@@ -27,7 +27,6 @@ public class CanSaveMedicineTest {
         newMedicine.setStock(200);
         newMedicine.setPrice(BigDecimal.valueOf(34.64));
         newMedicine.setName("Acetaminofen");
-        newMedicine.setProvider("DDD");
         Mockito.when(medicineService.save(newMedicine)).thenReturn(newMedicine);
     }
 
