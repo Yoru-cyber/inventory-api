@@ -16,8 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -45,9 +43,9 @@ public class CanFindMedicineNegativeTest {
     @Test
     public void testUpdateMedicine_NotFound() throws Exception {
         long id = 1L;
-        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").build();
+        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).name("Acetaminofen").build();
         String json = objectMapper.writeValueAsString(updatedMedicine);
-        when(medicineService.update(eq(id), any(Medicine.class))).thenThrow(new MedicineNotFoundException("Medicine not found with id: ", id));
+        when(medicineService.update(eq(id), any(Medicine.class))).thenThrow(new MedicineNotFoundException("Medicine not found with id: " + id, id));
 
         mockMvc.perform(put("/api/v1/medicines/{id}", id).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updatedMedicine))).andExpect(status().isNotFound());
     }

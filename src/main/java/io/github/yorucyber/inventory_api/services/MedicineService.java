@@ -30,7 +30,6 @@ public class MedicineService {
     public Medicine update(long id, Medicine updatedMedicine) {
         Medicine existingMedicine = medicineRepository.findById(id).orElseThrow(() -> new MedicineNotFoundException("Medicine not found with id: " + id, id));
         existingMedicine.setName(updatedMedicine.getName());
-        existingMedicine.setPrice(updatedMedicine.getPrice());
         existingMedicine.setStock(updatedMedicine.getStock());
         medicineRepository.save(existingMedicine);
         return existingMedicine;

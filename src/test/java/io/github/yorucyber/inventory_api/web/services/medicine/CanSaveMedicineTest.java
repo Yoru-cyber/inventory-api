@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
-
 @ExtendWith(SpringExtension.class)
 public class CanSaveMedicineTest {
     @Autowired
@@ -25,7 +23,6 @@ public class CanSaveMedicineTest {
     void saveShouldSaveEntity() throws Exception {
         Medicine newMedicine = new Medicine();
         newMedicine.setStock(200);
-        newMedicine.setPrice(BigDecimal.valueOf(34.64));
         newMedicine.setName("Acetaminofen");
         Mockito.when(medicineService.save(newMedicine)).thenReturn(newMedicine);
     }

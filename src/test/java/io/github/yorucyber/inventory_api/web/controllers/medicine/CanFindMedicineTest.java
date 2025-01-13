@@ -44,7 +44,7 @@ public class CanFindMedicineTest {
     @Test
     public void testUpdateMedicine_NotFound() throws Exception {
         long id = 1L;
-        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").build();
+        Medicine updatedMedicine = Medicine.builder().id(1L).stock(200).name("Acetaminofen").build();
         String json = objectMapper.writeValueAsString(updatedMedicine);
         when(medicineService.update(eq(id), any(Medicine.class))).thenReturn(updatedMedicine);
 

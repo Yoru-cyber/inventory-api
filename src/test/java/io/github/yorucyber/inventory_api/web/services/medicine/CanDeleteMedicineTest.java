@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +29,7 @@ public class CanDeleteMedicineTest {
     @Test
     void saveShouldSaveEntity() throws Exception {
         // Arrange
-        Medicine newMedicine = Medicine.builder().stock(200).price(BigDecimal.valueOf(34.64)).name("Acetaminofen").build();
+        Medicine newMedicine = Medicine.builder().stock(200).name("Acetaminofen").build();
 
         when(medicineRepository.save(Mockito.any(Medicine.class))).thenReturn(newMedicine);
         when(medicineRepository.findById(1L)).thenReturn(Optional.of(newMedicine));
