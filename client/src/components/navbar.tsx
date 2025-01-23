@@ -3,10 +3,9 @@ import { NavLink } from 'react-router';
 
 const Navbar = () => {
     return (
-        <nav className="bg-white shadow-lg">
-            <div className="max-w-7xl mx-auto px-4">
-                <div className="flex justify-between h-16">
-                    <div className="flex space-x-8">
+            <nav className="w-screen bg-white shadow-lg">
+                <div className="flex justify-center h-16">
+                    <div className="flex flex-wrap space-x-8">
                         <NavLink
                             to="/"
                             className={({ isActive }) =>
@@ -69,8 +68,7 @@ const Navbar = () => {
                         </NavLink>
                     </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
     );
 };
 

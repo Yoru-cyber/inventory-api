@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { PlusCircle, Pencil, Trash2, X } from 'lucide-react';
 import { Medicine } from '../../ts/interfaces/medicine.interface';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { createMedicine, deleteMedicine, getMedicines, updateMedicine } from '../../lib/api';
 
 const MedicinesIndex = () => {
-    const [medicines, setMedicines] = useState<Medicine[]>([]);
+    const queryClient = useQueryClient();
     const [isEditing, setIsEditing] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,19 +13,41 @@ const MedicinesIndex = () => {
         name: '',
         stock: 0,
     });
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['medicines'],
+        queryFn: getMedicines,
+    });
+    const medicines = Array.isArray(data) ? data : [];
+    const createMutation = useMutation({
+        mutationFn: createMedicine,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['medicines'] });
+            resetForm();
+        },
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: updateMedicine,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['medicines'] });
+            resetForm();
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: deleteMedicine,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['medicines'] });
+        },
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isEditing && editingId !== null) {
-            setMedicines(medicines.map(med =>
-                med.id === editingId ? { ...formData, id: editingId } : med
-            ));
-            setIsEditing(false);
-            setEditingId(null);
+            updateMutation.mutate({ ...formData, id: editingId });
         } else {
-            setMedicines([...medicines, { ...formData, id: Date.now() }]);
+            createMutation.mutate(formData);
         }
-        resetForm();
     };
 
     const handleEdit = (medicine: Medicine) => {
@@ -37,17 +61,16 @@ const MedicinesIndex = () => {
     };
 
     const handleDelete = (id: number) => {
-        setMedicines(medicines.filter(medicine => medicine.id !== id));
+        deleteMutation.mutate(id);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: name === 'price' || name === 'stock' ? parseFloat(value) || 0 : value,
+            [name]: name === 'stock' ? parseInt(value) || 0 : value,
         }));
     };
-
     const resetForm = () => {
         setFormData({
             name: '',
@@ -57,6 +80,9 @@ const MedicinesIndex = () => {
         setIsEditing(false);
         setEditingId(null);
     };
+
+    if (isLoading) return 'Loading...';
+    if (error) return 'Data not available';
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
@@ -156,7 +182,7 @@ const MedicinesIndex = () => {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-gray-200 text-center">
                             {medicines.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
@@ -180,7 +206,7 @@ const MedicinesIndex = () => {
                                                 <Pencil className="w-4 h-4" />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(medicine.id)}
+                                                onClick={() => confirm('This action is permanent and cannot be undone.') ? handleDelete(medicine.id): close()}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 <Trash2 className="w-4 h-4" />

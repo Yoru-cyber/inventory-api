@@ -1,5 +1,6 @@
+import { BASE_API_URI } from "../ts/constants";
 import { Medicine } from "../ts/interfaces/medicine.interface";
-const API_URL = "http://localhost:3000/api/v1/medicines";
+const API_URL = BASE_API_URI;
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -39,8 +40,8 @@ export const updateMedicine = async (medicine: Medicine): Promise<Medicine> => {
 };
 
 export const deleteMedicine = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/medicines/${id}`, {
+  await fetch(`${API_URL}/medicines/${id}`, {
     method: "DELETE",
   });
-  await handleResponse<void>(response);
+  return 
 };

@@ -8,7 +8,7 @@ function App() {
     <>
 
       <BrowserRouter>
-        <div className="min-h-screen bg-gray-50">
+        <div className="h-screen w-screen bg-gray-50">
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />}></Route>
